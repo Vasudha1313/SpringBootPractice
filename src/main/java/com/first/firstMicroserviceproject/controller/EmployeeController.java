@@ -3,10 +3,7 @@ package com.first.firstMicroserviceproject.controller;
 import com.first.firstMicroserviceproject.entity.Employee;
 import com.first.firstMicroserviceproject.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,4 +27,8 @@ public class EmployeeController {
         employeeService.setAllEmployees(employees);
     }
 
-}
+    @GetMapping("/findByDepartment")
+        public List<Employee> findByDepartment(@RequestParam String department) {
+            return employeeService.findByDepartment(department);
+        }
+    }

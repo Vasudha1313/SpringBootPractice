@@ -19,4 +19,9 @@ public class EmployeeService {
     public void setAllEmployees(List<Employee> employees){
         employeeRepository.saveAll(employees);
     }
+
+    public List<Employee> findByDepartment(String department) {
+        return employeeRepository.findByDepartment(department);
+    }
+
 }
