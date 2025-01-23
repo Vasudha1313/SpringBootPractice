@@ -24,4 +24,12 @@ public class EmployeeService {
         return employeeRepository.findByDepartment(department);
     }
 
+    public void deleteEmployeeById(Long id) {
+        if (employeeRepository.existsById(id)) {
+            employeeRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("Employee not found with ID: " + id);
+        }
+    }
+
 }
