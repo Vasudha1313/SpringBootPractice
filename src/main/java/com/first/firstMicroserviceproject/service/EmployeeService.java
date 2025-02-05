@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService {
@@ -21,7 +22,11 @@ public class EmployeeService {
     }
 
     public List<Employee> findByDepartment(String department) {
-        return employeeRepository.findByDepartment(department);
+
+        //return employeeRepository.findByDepartment(department);
+        return employeeRepository.findAll().stream().filter(employee->department.equalsIgnoreCase(employee.getDepartment())).collect(Collectors.toList());
+
+
     }
 
     public void deleteEmployeeById(Long id) {
