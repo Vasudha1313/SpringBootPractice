@@ -22,11 +22,9 @@ public class EmployeeService {
     }
 
     public List<Employee> findByDepartment(String department) {
-
-        //return employeeRepository.findByDepartment(department);
-        return employeeRepository.findAll().stream().filter(employee->department.equalsIgnoreCase(employee.getDepartment())).collect(Collectors.toList());
-
-
+        // return employeeRepository.findByDepartment(department);
+        return employeeRepository.findAll().stream().
+                filter(employee->department.equalsIgnoreCase(employee.getDepartment())).collect(Collectors.toList());
     }
 
     public void deleteEmployeeById(Long id) {
