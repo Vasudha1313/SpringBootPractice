@@ -1,14 +1,23 @@
 
-package com.first.firstMicroserviceproject.entity;
+package com.practice.employee.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+
 @Entity
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "address_id")
+    private Long addressId;
 
     private String street;
 
@@ -19,16 +28,6 @@ public class Address {
     private String zipcode;
 
     @ManyToOne
+    @JoinColumn(name = "employee", nullable = false)
     private Employee employee;
-
-    public Address(String street, String city, String state, String zipcode) {
-        this.street = street;
-        this.city = city;
-        this.state = state;
-        this.zipcode = zipcode;
-
-    }
-
-    public Address() {
-    }
 }

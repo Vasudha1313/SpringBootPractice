@@ -1,18 +1,19 @@
-package com.first.firstMicroserviceproject.controller;
+package com.practice.employee.controller;
 
-import com.first.firstMicroserviceproject.entity.Employee;
-import com.first.firstMicroserviceproject.service.EmployeeService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import com.practice.employee.dto.EmployeeRequestDto;
+import com.practice.employee.entity.Employee;
+import com.practice.employee.service.EmployeeService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 public class EmployeeController {
-    @Autowired
-    private EmployeeService employeeService;
+
+    private final EmployeeService employeeService;
 
     @GetMapping("/test")
     public void test(){
@@ -25,7 +26,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/setAllEmployees")
-    public void setAllEmployees(@RequestBody List<Employee> employees) {
+    public void setAllEmployees(@RequestBody List<EmployeeRequestDto> employees) {
         employeeService.setAllEmployees(employees);
     }
 

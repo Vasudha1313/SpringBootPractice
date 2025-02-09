@@ -1,4 +1,4 @@
-package com.first.firstMicroserviceproject;
+package com.practice.employee;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
