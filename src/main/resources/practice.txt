@@ -1,0 +1,434 @@
+Object Model
+For these examples, we'll use the following Employee and Department classes:
+
+java
+Copy
+Edit
+class Employee {
+    String name;
+    int age;
+    double salary;
+    String department;
+
+    Employee(String name, int age, double salary, String department) {
+        this.name = name;
+        this.age = age;
+        this.salary = salary;
+        this.department = department;
+    }
+
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    public double getSalary() { return salary; }
+    public String getDepartment() { return department; }
+
+    @Override
+    public String toString() {
+        return name + " (" + department + ", " + salary + ")";
+    }
+}
+And a sample employee list:
+
+java
+Copy
+Edit
+List<Employee> employees = Arrays.asList(
+    new Employee("Alice", 30, 70000, "HR"),
+    new Employee("Bob", 40, 90000, "IT"),
+    new Employee("Charlie", 35, 120000, "Finance"),
+    new Employee("David", 45, 80000, "IT"),
+    new Employee("Eve", 28, 75000, "HR"),
+    new Employee("Frank", 50, 110000, "Finance")
+);
+Hands-on Java Stream API Questions with Objects
+1. Find all employees in the IT department
+
+List<Employee> itEmployees = employees.stream()
+                                      .filter(e -> e.getDepartment().equals("IT"))
+                                      .collect(Collectors.toList());
+System.out.println(itEmployees);
+2. Find employees earning more than $80,000
+
+List<Employee> highEarners = employees.stream()
+                                      .filter(e -> e.getSalary() > 80000)
+                                      .collect(Collectors.toList());
+System.out.println(highEarners);
+3. Get a list of employee names
+
+List<String> employeeNames = employees.stream()
+                                      .map(Employee::getName)
+                                      .collect(Collectors.toList());
+System.out.println(employeeNames);
+4. Find the highest-paid employee
+
+Optional<Employee> highestPaid = employees.stream()
+                                          .max(Comparator.comparingDouble(Employee::getSalary));
+System.out.println(highestPaid.orElse(null));
+5. Find the youngest employee
+
+Optional<Employee> youngest = employees.stream()
+                                       .min(Comparator.comparingInt(Employee::getAge));
+System.out.println(youngest.orElse(null));
+6. Calculate the average salary of all employees
+
+double avgSalary = employees.stream()
+                            .mapToDouble(Employee::getSalary)
+                            .average()
+                            .orElse(0);
+System.out.println(avgSalary);
+7. Group employees by department
+
+Map<String, List<Employee>> employeesByDept = employees.stream()
+                                                       .collect(Collectors.groupingBy(Employee::getDepartment));
+System.out.println(employeesByDept);
+8. Count employees in each department
+
+Map<String, Long> departmentCount = employees.stream()
+                                             .collect(Collectors.groupingBy(Employee::getDepartment, Collectors.counting()));
+System.out.println(departmentCount);
+9. Find the highest salary in each department
+
+Map<String, Optional<Employee>> highestSalaryByDept = employees.stream()
+    .collect(Collectors.groupingBy(
+        Employee::getDepartment,
+        Collectors.maxBy(Comparator.comparingDouble(Employee::getSalary))
+    ));
+System.out.println(highestSalaryByDept);
+10. Partition employees into two groups: Above and below $80,000 salary
+
+Map<Boolean, List<Employee>> salaryPartition = employees.stream()
+    .collect(Collectors.partitioningBy(e -> e.getSalary() > 80000));
+System.out.println(salaryPartition);
+11. Get the names of employees sorted by salary (ascending)
+
+List<String> sortedNames = employees.stream()
+                                    .sorted(Comparator.comparingDouble(Employee::getSalary))
+                                    .map(Employee::getName)
+                                    .collect(Collectors.toList());
+System.out.println(sortedNames);
+12. Find the total salary expense for each department
+
+Map<String, Double> totalSalaryByDept = employees.stream()
+    .collect(Collectors.groupingBy(
+        Employee::getDepartment,
+        Collectors.summingDouble(Employee::getSalary)
+    ));
+System.out.println(totalSalaryByDept);
+13. Find the second highest-paid employee
+
+Optional<Employee> secondHighestPaid = employees.stream()
+    .sorted(Comparator.comparingDouble(Employee::getSalary).reversed())
+    .skip(1)
+    .findFirst();
+System.out.println(secondHighestPaid.orElse(null));
+14. Get a comma-separated list of all employee names
+
+String names = employees.stream()
+                        .map(Employee::getName)
+                        .collect(Collectors.joining(", "));
+System.out.println(names);
+15. Find employees whose names start with "A"
+
+List<Employee> employeesWithA = employees.stream()
+                                         .filter(e -> e.getName().startsWith("A"))
+                                         .collect(Collectors.toList());
+System.out.println(employeesWithA);
+16. Increase salary of all employees by 10%
+
+List<Employee> updatedSalaries = employees.stream()
+    .map(e -> new Employee(e.getName(), e.getAge(), e.getSalary() * 1.10, e.getDepartment()))
+    .collect(Collectors.toList());
+System.out.println(updatedSalaries);
+17. Find employees whose age is between 30 and 40
+
+List<Employee> ageBetween30And40 = employees.stream()
+                                            .filter(e -> e.getAge() >= 30 && e.getAge() <= 40)
+                                            .collect(Collectors.toList());
+System.out.println(ageBetween30And40);
+18. Find employees in each department sorted by salary (descending)
+
+Map<String, List<Employee>> sortedEmployeesByDept = employees.stream()
+    .collect(Collectors.groupingBy(Employee::getDepartment,
+        Collectors.collectingAndThen(Collectors.toList(),
+            list -> list.stream().sorted(Comparator.comparingDouble(Employee::getSalary).reversed())
+                        .collect(Collectors.toList())
+        )));
+System.out.println(sortedEmployeesByDept);
+19. Find the employee with the longest name
+
+Optional<Employee> longestName = employees.stream()
+                                          .max(Comparator.comparingInt(e -> e.getName().length()));
+System.out.println(longestName.orElse(null));
+20. Paginate employees (e.g., return page 1, size 2)
+
+int page = 1;
+int size = 2;
+List<Employee> paginatedEmployees = employees.stream()
+                                             .skip(page * size)
+                                             .limit(size)
+                                             .collect(Collectors.toList());
+System.out.println(paginatedEmployees);
+
+1. allMatch() - Check if all employees earn more than $60,000
+
+boolean allEarnAbove60K = employees.stream()
+                                   .allMatch(e -> e.getSalary() > 60000);
+System.out.println(allEarnAbove60K);  // Output: true
+✅ Use case: Checking if all employees meet a certain condition.
+
+2. anyMatch() - Check if any employee is in the "IT" department
+
+boolean hasITEmployee = employees.stream()
+                                 .anyMatch(e -> e.getDepartment().equals("IT"));
+System.out.println(hasITEmployee);  // Output: true
+✅ Use case: Checking if at least one element satisfies a condition.
+
+3. noneMatch() - Check if no employee is under 25 years old
+
+boolean noOneUnder25 = employees.stream()
+                                .noneMatch(e -> e.getAge() < 25);
+System.out.println(noOneUnder25);  // Output: true
+✅ Use case: Ensuring a condition does not hold for any elements.
+
+4. findFirst() - Get the first employee from the list
+
+Optional<Employee> firstEmployee = employees.stream().findFirst();
+System.out.println(firstEmployee.orElse(null));  // Output: Alice (HR, $70000)
+✅ Use case: Useful when dealing with ordered data (like logs, queue processing).
+
+5. findAny() - Get any employee (useful in parallel streams)
+
+Optional<Employee> anyEmployee = employees.stream().findAny();
+System.out.println(anyEmployee.orElse(null));
+✅ Use case: Used in parallel streams to quickly find an arbitrary element.
+
+6. limit() - Get the first 3 employees
+
+List<Employee> firstThree = employees.stream()
+                                     .limit(3)
+                                     .collect(Collectors.toList());
+System.out.println(firstThree);
+✅ Use case: Implementing pagination.
+
+7. skip() - Skip the first 2 employees
+
+List<Employee> skippedTwo = employees.stream()
+                                     .skip(2)
+                                     .collect(Collectors.toList());
+System.out.println(skippedTwo);
+✅ Use case: Pagination or skipping processed elements.
+
+8. distinct() - Remove duplicate salaries
+
+List<Double> distinctSalaries = employees.stream()
+                                         .map(Employee::getSalary)
+                                         .distinct()
+                                         .collect(Collectors.toList());
+System.out.println(distinctSalaries);
+✅ Use case: Removing duplicates.
+
+9. mapToInt() - Get sum of all employee ages
+
+int totalAge = employees.stream()
+                        .mapToInt(Employee::getAge)
+                        .sum();
+System.out.println(totalAge);
+✅ Use case: Performing mathematical calculations.
+
+10. peek() - Debugging by printing employee names during processing
+
+List<String> processedNames = employees.stream()
+                                       .peek(e -> System.out.println("Processing: " + e.getName()))
+                                       .map(Employee::getName)
+                                       .collect(Collectors.toList());
+System.out.println(processedNames);
+✅ Use case: Debugging intermediate operations.
+
+11. reduce() - Find the total salary of all employees
+
+double totalSalary = employees.stream()
+                              .map(Employee::getSalary)
+                              .reduce(0.0, Double::sum);
+System.out.println(totalSalary);
+✅ Use case: Aggregation (sum, multiplication, concatenation).
+
+12. collect() - Convert employees to a Map (Name -> Salary)
+
+Map<String, Double> employeeSalaryMap = employees.stream()
+                                                 .collect(Collectors.toMap(Employee::getName, Employee::getSalary));
+System.out.println(employeeSalaryMap);
+✅ Use case: Transforming a list into a Map.
+
+13. collect(Collectors.groupingBy()) - Group employees by department
+
+Map<String, List<Employee>> groupedByDepartment = employees.stream()
+                                                           .collect(Collectors.groupingBy(Employee::getDepartment));
+System.out.println(groupedByDepartment);
+✅ Use case: Grouping data like SQL GROUP BY.
+
+14. collect(Collectors.partitioningBy()) - Partition employees earning more than $80K
+
+Map<Boolean, List<Employee>> salaryPartition = employees.stream()
+                                                        .collect(Collectors.partitioningBy(e -> e.getSalary() > 80000));
+System.out.println(salaryPartition);
+✅ Use case: Creating binary partitions.
+
+15. flatMap() - Flatten list of employee hobbies (assuming each has multiple hobbies)
+
+class Employee {
+    String name;
+    List<String> hobbies;
+
+    Employee(String name, List<String> hobbies) {
+        this.name = name;
+        this.hobbies = hobbies;
+    }
+
+    public String getName() { return name; }
+    public List<String> getHobbies() { return hobbies; }
+}
+
+List<Employee> employees = Arrays.asList(
+    new Employee("Alice", Arrays.asList("Reading", "Gaming")),
+    new Employee("Bob", Arrays.asList("Cycling", "Cooking")),
+    new Employee("Charlie", Arrays.asList("Gaming", "Swimming"))
+);
+
+List<String> allHobbies = employees.stream()
+                                   .flatMap(e -> e.getHobbies().stream())
+                                   .distinct()
+                                   .collect(Collectors.toList());
+
+System.out.println(allHobbies);
+
+
+1. Find Names of Employees in "IT" Department Sorted by Salary (Descending)
+
+List<String> itEmployeeNames = employees.stream()
+    .filter(e -> e.getDepartment().equals("IT"))       // Filter IT employees
+    .sorted(Comparator.comparingDouble(Employee::getSalary).reversed()) // Sort by salary (descending)
+    .map(Employee::getName)                             // Extract names
+    .collect(Collectors.toList());
+
+System.out.println(itEmployeeNames);
+✅ Chained Operations: filter() → sorted() → map() → collect()
+
+2. Find the Top 2 Highest-Paid Employees Across All Departments
+
+List<Employee> top2Salaries = employees.stream()
+    .sorted(Comparator.comparingDouble(Employee::getSalary).reversed()) // Sort by salary descending
+    .limit(2)  // Take the top 2
+    .collect(Collectors.toList());
+
+System.out.println(top2Salaries);
+✅ Chained Operations: sorted() → limit() → collect()
+
+3. Get a List of Employees Aged 30-45, Sorted by Name
+
+List<Employee> filteredEmployees = employees.stream()
+    .filter(e -> e.getAge() >= 30 && e.getAge() <= 45) // Filter by age range
+    .sorted(Comparator.comparing(Employee::getName))   // Sort by name
+    .collect(Collectors.toList());
+
+System.out.println(filteredEmployees);
+✅ Chained Operations: filter() → sorted() → collect()
+
+4. Get a List of Employee Names Where Salary > 80K and Department is "Finance"
+
+List<String> financeEmployees = employees.stream()
+    .filter(e -> e.getSalary() > 80000 && e.getDepartment().equals("Finance")) // Filter by salary & dept
+    .map(Employee::getName) // Extract names
+    .collect(Collectors.toList());
+
+System.out.println(financeEmployees);
+✅ Chained Operations: filter() → map() → collect()
+
+5. Find the Average Salary of Employees in Each Department
+
+Map<String, Double> avgSalaryByDept = employees.stream()
+    .collect(Collectors.groupingBy(
+        Employee::getDepartment,
+        Collectors.averagingDouble(Employee::getSalary)
+    ));
+
+System.out.println(avgSalaryByDept);
+✅ Chained Operations: collect(groupingBy() → averagingDouble())
+
+6. Find the Names of Employees Sorted Alphabetically, Ignoring Case
+
+List<String> sortedNames = employees.stream()
+    .map(Employee::getName)
+    .sorted(String.CASE_INSENSITIVE_ORDER)  // Sort ignoring case
+    .collect(Collectors.toList());
+
+System.out.println(sortedNames);
+✅ Chained Operations: map() → sorted() → collect()
+
+7. Get the Total Salary Expense of IT Employees
+
+double totalSalaryIT = employees.stream()
+    .filter(e -> e.getDepartment().equals("IT")) // Filter IT employees
+    .mapToDouble(Employee::getSalary) // Convert to salary double values
+    .sum();
+
+System.out.println(totalSalaryIT);
+✅ Chained Operations: filter() → mapToDouble() → sum()
+
+8. Find the 3rd Highest Paid Employee
+
+Optional<Employee> thirdHighestPaid = employees.stream()
+    .sorted(Comparator.comparingDouble(Employee::getSalary).reversed()) // Sort salary descending
+    .skip(2)  // Skip top 2
+    .findFirst(); // Get the next (3rd)
+
+System.out.println(thirdHighestPaid.orElse(null));
+✅ Chained Operations: sorted() → skip() → findFirst()
+
+9. Find Employees Whose Names Start with "A" or "B" and are Below 40 Years Old
+
+List<Employee> filteredEmployees = employees.stream()
+    .filter(e -> (e.getName().startsWith("A") || e.getName().startsWith("B")) && e.getAge() < 40)
+    .collect(Collectors.toList());
+
+System.out.println(filteredEmployees);
+✅ Chained Operations: filter() → collect()
+
+10. Get a List of Unique Departments in Alphabetical Order
+
+List<String> uniqueDepartments = employees.stream()
+    .map(Employee::getDepartment)
+    .distinct() // Remove duplicates
+    .sorted() // Sort alphabetically
+    .collect(Collectors.toList());
+
+System.out.println(uniqueDepartments);
+✅ Chained Operations: map() → distinct() → sorted() → collect()
+
+11. Find the Department with the Highest Average Salary
+
+String highestAvgSalaryDept = employees.stream()
+    .collect(Collectors.groupingBy(
+        Employee::getDepartment,
+        Collectors.averagingDouble(Employee::getSalary)
+    ))
+    .entrySet().stream()
+    .max(Map.Entry.comparingByValue()) // Find highest average salary
+    .map(Map.Entry::getKey)
+    .orElse(null);
+
+System.out.println(highestAvgSalaryDept);
+✅ Chained Operations: collect(groupingBy()) → entrySet() → max() → map()
+
+12. Get Employees in Each Department Sorted by Salary Descending
+
+Map<String, List<Employee>> sortedEmployeesByDept = employees.stream()
+    .collect(Collectors.groupingBy(
+        Employee::getDepartment,
+        Collectors.collectingAndThen(Collectors.toList(),
+            list -> list.stream()
+                        .sorted(Comparator.comparingDouble(Employee::getSalary).reversed())
+                        .collect(Collectors.toList()))
+    ));
+
+System.out.println(sortedEmployeesByDept);
+✅ Chained Operations: collect(groupingBy() → collectingAndThen() → sorted() → collect())
