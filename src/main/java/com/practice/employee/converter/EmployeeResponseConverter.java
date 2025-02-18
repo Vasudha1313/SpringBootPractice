@@ -14,21 +14,17 @@ public class EmployeeResponseConverter implements Converter<Employee,EmployeeRes
 
     @Override
     public EmployeeResponseDto convert(Employee emp) {
-        EmployeeResponseDto empResponse = EmployeeResponseDto.builder().empId(emp.getEmployeeId())
-                .name(emp.getName()).department(emp.getDepartment()).salary(emp.getSalary()).build();
 
-        List<AddressResponseDto> addresses = emp.getAddress().stream().map(address -> {
-            AddressResponseDto add = AddressResponseDto.builder()
-                    .addressId(address.getAddressId()).street(address.getStreet())
-                    .city(address.getCity()).state(address.getState()).zipcode(address.getZipcode()).build();
-            add.setEmpId(empResponse.getEmpId());
-            return add;
-        }).toList();
-        empResponse.setAddress(addresses);
-        return empResponse;
+        List<AddressResponseDto> addressResponseDtoList = emp.getAddress().stream().map(address ->
+                AddressResponseDto.builder().addressId(address.getAddressId()).street(address.getStreet())
+                        .state(address.getState()).city(address.getCity()).zipcode(address.getZipcode())
+                        .build()).toList();
+        return EmployeeResponseDto.builder().empId(emp.getEmployeeId())
+                .name(emp.getName()).department(emp.getDepartment()).salary(emp.getSalary())
+                .address(addressResponseDtoList).build();
     }
 
-    public List<EmployeeResponseDto> convertList(List<Employee> employees) {
-        return employees.stream().map(this::convert).toList();
+        public List<EmployeeResponseDto> convertList(List<Employee> employees) {
+            return employees.stream().map(this::convert).toList();
+        }
     }
-}
