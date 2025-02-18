@@ -1,6 +1,7 @@
 package com.practice.employee.controller;
 
 import com.practice.employee.dto.EmployeeRequestDto;
+import com.practice.employee.dto.EmployeeResponseDto;
 import com.practice.employee.entity.Employee;
 import com.practice.employee.service.EmployeeService;
 import lombok.AllArgsConstructor;
@@ -26,8 +27,8 @@ public class EmployeeController {
     }
 
     @PostMapping("/setAllEmployees")
-    public void setAllEmployees(@RequestBody List<EmployeeRequestDto> employees) {
-        employeeService.setAllEmployees(employees);
+    public List<EmployeeResponseDto> setAllEmployees(@RequestBody List<EmployeeRequestDto> employees) {
+        return employeeService.setAllEmployees(employees);
     }
 
     @GetMapping("/findByDepartment")
